@@ -23,10 +23,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("AuthProvider initialized, setting up auth state listener");
+    
     // تعيين مستمع لتغييرات حالة المصادقة أولاً
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
-        console.log("Auth state changed:", event);
+        console.log("Auth state changed:", event, "Session:", currentSession?.user?.email);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
@@ -40,7 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         if (event === 'SIGNED_IN') {
-          console.log("User signed in successfully:", currentSession?.user);
+          console.log("تم تسجيل الدخول بنجاح، المستخدم:", currentSession?.user?.email);
           toast.success("تم تسجيل الدخول بنجاح");
           navigate('/');
         }
@@ -53,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // ثم التحقق من وجود جلسة حالية
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      console.log("Current session:", currentSession);
+      console.log("Current session check:", currentSession?.user?.email);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       
@@ -71,10 +73,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkUserRole = async (userId: string) => {
     try {
+      console.log("التحقق من صلاحيات المستخدم:", userId);
       const { data, error } = await supabase
         .rpc('is_admin', { user_id: userId });
         
       if (error) throw error;
+      console.log("نتيجة is_admin:", data);
       setIsAdmin(!!data);
     } catch (error) {
       console.error("خطأ في التحقق من صلاحيات المستخدم:", error);

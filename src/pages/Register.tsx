@@ -19,8 +19,10 @@ const Register = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   
-  // استخدام عنوان كامل محدد بدلاً من window.location.origin
+  // استخدام عنوان URL كامل مع بروتوكول
   const appURL = window.location.origin; // عنوان التطبيق
+  
+  console.log("صفحة التسجيل، عنوان التطبيق:", appURL);
   
   // إذا كان المستخدم مسجل الدخول بالفعل، قم بتوجيهه إلى الصفحة الرئيسية
   if (loading) {
@@ -97,13 +99,19 @@ const Register = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: appURL
+          redirectTo: appURL,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
         }
       });
       
       if (error) {
         throw error;
       }
+      
+      console.log("نتيجة تسجيل الدخول عبر Google:", data);
       
     } catch (error: any) {
       console.error("خطأ في تسجيل الدخول باستخدام Google:", error);
