@@ -19,10 +19,10 @@ const Register = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   
-  // استخدام عنوان URL كامل مع بروتوكول
-  const appURL = window.location.origin; // عنوان التطبيق
+  // عنوان إعادة التوجيه المُحدد
+  const redirectUrl = "https://trndsky.com/dashboard";
   
-  console.log("صفحة التسجيل، عنوان التطبيق:", appURL);
+  console.log("صفحة التسجيل، عنوان إعادة التوجيه:", redirectUrl);
   
   // إذا كان المستخدم مسجل الدخول بالفعل، قم بتوجيهه إلى الصفحة الرئيسية
   if (loading) {
@@ -94,12 +94,12 @@ const Register = () => {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      console.log("تسجيل الدخول عبر Google مع إعادة التوجيه إلى:", appURL);
+      console.log("تسجيل الدخول عبر Google مع إعادة التوجيه إلى:", redirectUrl);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: appURL,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent'

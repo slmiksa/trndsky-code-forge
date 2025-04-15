@@ -22,8 +22,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
+  // عنوان إعادة التوجيه المُحدد
+  const redirectUrl = "https://trndsky.com/dashboard";
+
   useEffect(() => {
     console.log("AuthProvider initialized, setting up auth state listener");
+    console.log("عنوان إعادة التوجيه:", redirectUrl);
     
     // تعيين مستمع لتغييرات حالة المصادقة أولاً
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
