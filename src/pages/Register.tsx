@@ -18,6 +18,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const currentURL = window.location.origin;
 
   // إذا كان المستخدم مسجل الدخول بالفعل، قم بتوجيهه إلى الصفحة الرئيسية
   if (loading) {
@@ -92,7 +93,7 @@ const Register = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: `${currentURL}/`
         }
       });
       

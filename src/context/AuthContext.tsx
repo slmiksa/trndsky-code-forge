@@ -23,13 +23,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // تعيين مستمع لتغييرات حالة المصادقة أولاً
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
-        // Defer Supabase calls to avoid auth deadlocks
+        // تأجيل استدعاء Supabase لتجنب حالات الانسداد
         if (currentSession?.user) {
           setTimeout(() => {
             checkUserRole(currentSession.user.id);
@@ -49,8 +50,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
-    // THEN check for existing session
+    // ثم التحقق من وجود جلسة حالية
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Current session:", currentSession);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       
