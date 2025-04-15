@@ -18,8 +18,10 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const currentURL = window.location.origin;
-
+  
+  // استخدام عنوان كامل محدد بدلاً من window.location.origin
+  const appURL = window.location.origin; // عنوان التطبيق
+  
   // إذا كان المستخدم مسجل الدخول بالفعل، قم بتوجيهه إلى الصفحة الرئيسية
   if (loading) {
     return (
@@ -90,10 +92,12 @@ const Register = () => {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
+      console.log("تسجيل الدخول عبر Google مع إعادة التوجيه إلى:", appURL);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${currentURL}`
+          redirectTo: appURL
         }
       });
       

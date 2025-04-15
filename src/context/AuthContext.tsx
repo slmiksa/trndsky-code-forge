@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         if (event === 'SIGNED_IN') {
+          console.log("User signed in successfully:", currentSession?.user);
           toast.success("تم تسجيل الدخول بنجاح");
           navigate('/');
         }
