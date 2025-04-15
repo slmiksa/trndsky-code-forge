@@ -1,14 +1,29 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, UserCircle, LogOut, Settings } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -39,12 +54,46 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/login">
-              <Button variant="outline" className="h-9">تسجيل الدخول</Button>
-            </Link>
-            <Link to="/register">
-              <Button className="h-9">إنشاء حساب</Button>
-            </Link>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="h-9 flex gap-2 items-center">
+                    <UserCircle className="h-4 w-4" />
+                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate('/admin')}>
+                        <Settings className="ml-2 h-4 w-4" />
+                        لوحة التحكم
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <UserCircle className="ml-2 h-4 w-4" />
+                    الملف الشخصي
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="ml-2 h-4 w-4" />
+                    تسجيل الخروج
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="h-9">تسجيل الدخول</Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="h-9">إنشاء حساب</Button>
+                </Link>
+              </>
+            )}
           </div>
           <button className="md:hidden" onClick={toggleMenu}>
             {isMenuOpen ? (
@@ -76,12 +125,44 @@ const Navbar = () => {
               اتصل بنا
             </Link>
             <div className="flex flex-col gap-2 mt-4">
-              <Link to="/login" onClick={toggleMenu}>
-                <Button variant="outline" className="w-full">تسجيل الدخول</Button>
-              </Link>
-              <Link to="/register" onClick={toggleMenu}>
-                <Button className="w-full">إنشاء حساب</Button>
-              </Link>
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Link to="/admin" onClick={toggleMenu}>
+                      <Button variant="outline" className="w-full justify-start">
+                        <Settings className="ml-2 h-4 w-4" />
+                        لوحة التحكم
+                      </Button>
+                    </Link>
+                  )}
+                  <Link to="/profile" onClick={toggleMenu}>
+                    <Button variant="outline" className="w-full justify-start">
+                      <UserCircle className="ml-2 h-4 w-4" />
+                      الملف الشخصي
+                    </Button>
+                  </Link>
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="destructive"
+                    onClick={async () => {
+                      await handleSignOut();
+                      toggleMenu();
+                    }}
+                  >
+                    <LogOut className="ml-2 h-4 w-4" />
+                    تسجيل الخروج
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={toggleMenu}>
+                    <Button variant="outline" className="w-full">تسجيل الدخول</Button>
+                  </Link>
+                  <Link to="/register" onClick={toggleMenu}>
+                    <Button className="w-full">إنشاء حساب</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
