@@ -1,8 +1,6 @@
 
-import HomePage from './HomePage';
-
 const Index = () => {
-  return <HomePage />;
+  return <div>Welcome to TrndSky</div>;
 };
 
 export default Index;

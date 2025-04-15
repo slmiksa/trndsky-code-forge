@@ -15,6 +15,7 @@ import Products from "./pages/Products";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -32,15 +33,19 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+    <BrowserRouter>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <Routes>
           {/* Main routes */}
           <Route 
             path="/" 
             element={<MainLayout><HomePage /></MainLayout>} 
+          />
+          <Route 
+            path="/index" 
+            element={<MainLayout><Index /></MainLayout>} 
           />
           <Route 
             path="/products" 
@@ -56,8 +61,8 @@ const App = () => (
           {/* 404 page */}
           <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+      </TooltipProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
